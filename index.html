@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonadive CV Generator</title>
+<style>
+  :root{
+    --navy:#0e2233;
+    --navy-2:#16344d;
+    --accent:#e8a33d;
+    --accent-soft:#fdf3e3;
+    --teal:#2e8f83;
+    --ink:#233240;
+    --muted:#5f7181;
+    --line:#e3e9ee;
+    --bg:#f6f8fa;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#e2e6ea;}
+
+  /* ============ APP LAYOUT ============ */
+  .app{display:flex;height:100vh;overflow:hidden;}
+  .form-panel{
+    width:420px;min-width:420px;background:#fff;border-right:1px solid var(--line);
+    overflow-y:auto;padding:0 0 60px;
+  }
+  .form-head{
+    background:var(--navy);color:#fff;padding:18px 20px;position:sticky;top:0;z-index:5;
+    display:flex;align-items:center;gap:12px;
+  }
+  .form-head .mark{
+    width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--navy);
+    font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
+  }
+  .form-head h1{font-size:16px;letter-spacing:1px;}
+  .form-head small{display:block;font-weight:400;color:#9fb4c4;font-size:11px;letter-spacing:.5px;}
+  .form-body{padding:16px 20px;}
+  fieldset{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;background:#fcfdfe;}
+  legend{
+    font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--navy);
+    padding:0 8px;background:var(--accent-soft);border-radius:6px;border:1px solid #f0dcb6;
+  }
+  label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin:10px 0 4px;letter-spacing:.5px;}
+  label:first-of-type{margin-top:0;}
+  input[type=text],textarea,select{
+    width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;
+    font-size:12.5px;font-family:inherit;color:var(--ink);background:#fff;
+  }
+  input:focus,textarea:focus{outline:2px solid rgba(232,163,61,.45);border-color:var(--accent);}
+  textarea{resize:vertical;min-height:56px;line-height:1.5;}
+  .hint{font-size:10.5px;color:#8aa;color:var(--muted);margin-top:3px;line-height:1.4;}
+  .row2{display:flex;gap:8px;}
+  .row2>div{flex:1;}
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;cursor:pointer;
+    font-family:inherit;font-size:12.5px;font-weight:600;padding:8px 14px;
+  }
+  .btn-gold{background:var(--accent);color:var(--navy);}
+  .btn-gold:hover{background:#f0b355;}
+  .btn-navy{background:var(--navy);color:#fff;}
+  .btn-navy:hover{background:var(--navy-2);}
+  .btn-ghost{background:#eef2f5;color:var(--navy);}
+  .btn-ghost:hover{background:#e2e9ee;}
+  .btn-danger{background:#fbe9e9;color:#b03030;}
+  .btn-danger:hover{background:#f5d8d8;}
+  .btn-sm{padding:5px 10px;font-size:11.5px;border-radius:6px;}
+  .toolbar{
+    position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
+    padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap;z-index:5;
+  }
+  .proj-card{
+    border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;
+    background:#fff;padding:12px;margin-bottom:14px;
+  }
+  .proj-card .proj-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .proj-card .proj-top .pt{font-size:13px;font-weight:700;color:var(--navy);}
+  .subcard{border:1px dashed #d7dfe6;border-radius:8px;padding:10px;margin-top:10px;background:#fafcfd;}
+  .subcard .sc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+  .sc-top span{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);}
+  .preview-wrap{flex:1;overflow:auto;padding:24px 0;}
+  .preview-note{
+    text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:10px;letter-spacing:.5px;
+  }
+
+  /* ============ CV TEMPLATE (same design as the EPM CV) ============ */
+  .page{
+    width:210mm;height:297mm;background:#fff;position:relative;overflow:hidden;
+    margin:0 auto 18px;box-shadow:0 2px 14px rgba(0,0,0,.18);
+    display:flex;flex-direction:column;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo{
+    height:46px;min-width:46px;padding:0 12px;border-radius:12px;background:var(--accent);
+    color:var(--navy);font-weight:800;font-size:15px;letter-spacing:1.5px;
+    display:flex;align-items:center;justify-content:center;white-space:nowrap;
+  }
+  .footer{
+    margin-top:auto;background:var(--navy);color:#cfdce6;font-size:10.5px;letter-spacing:.6px;
+    padding:9px 46px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .footer b{color:var(--accent);font-weight:600;}
+  h3.section{
+    font-size:12px;letter-spacing:2.5px;color:var(--navy);font-weight:700;
+    text-transform:uppercase;margin-bottom:10px;position:relative;padding-left:14px;
+  }
+  h3.section::before{
+    content:"";position:absolute;left:0;top:2px;bottom:2px;width:5px;border-radius:3px;background:var(--accent);
+  }
+  ul.dots{list-style:none;}
+  ul.dots li{position:relative;padding-left:16px;margin-bottom:7px;font-size:11.5px;line-height:1.55;}
+  ul.dots li::before{
+    content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--accent);
+  }
+  .chip{
+    display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);
+    color:#eaf1f6;border-radius:20px;padding:4px 11px;font-size:10.5px;margin:0 6px 7px 0;letter-spacing:.4px;
+  }
+  .chip.gold{background:var(--accent);border-color:var(--accent);color:var(--navy);font-weight:600;}
+  .hero{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 70%);
+    color:#fff;padding:38px 46px 30px;position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;
+    background:rgba(232,163,61,.14);
+  }
+  .hero::before{
+    content:"";position:absolute;right:60px;bottom:-90px;width:170px;height:170px;border-radius:50%;
+    border:2px solid rgba(232,163,61,.35);
+  }
+  .hero .name{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-top:16px;font-weight:700;}
+  .hero .role{font-size:30px;font-weight:800;letter-spacing:1px;margin-top:6px;line-height:1.15;}
+  .hero .role span{color:var(--accent);}
+  .hero .sub{margin-top:8px;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:#9fb4c4;}
+  .hero .exp-badge{
+    position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+    background:rgba(232,163,61,.15);border:1px solid var(--accent);color:var(--accent);
+    border-radius:24px;padding:6px 16px;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .p1-body{display:flex;flex:1;}
+  .p1-left{width:38%;background:var(--bg);padding:26px 26px 26px 46px;border-right:1px solid var(--line);}
+  .p1-right{flex:1;padding:26px 46px 26px 30px;}
+  .block{margin-bottom:22px;}
+  .kv{margin-bottom:12px;}
+  .kv .k{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;}
+  .kv .v{font-size:11.5px;line-height:1.55;}
+  .tagrow .tag{
+    display:inline-block;background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:4px 9px;font-size:10.5px;margin:0 5px 6px 0;color:var(--navy);font-weight:600;
+  }
+  .xp-card{
+    border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:8px;
+    padding:12px 14px;margin-bottom:12px;background:#fff;
+  }
+  .xp-card .t{font-size:13px;font-weight:700;color:var(--navy);}
+  .xp-card .d{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.5px;}
+  .lang-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:11.5px;}
+  .lang-bar .lname{width:60px;}
+  .lang-bar .track{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden;}
+  .lang-bar .fill{height:100%;border-radius:3px;background:var(--accent);}
+  .m-head{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 75%);
+    color:#fff;padding:24px 46px;display:flex;justify-content:space-between;align-items:center;
+    position:relative;overflow:hidden;
+  }
+  .m-head::after{
+    content:"";position:absolute;right:-50px;top:-60px;width:180px;height:180px;border-radius:50%;
+    background:rgba(232,163,61,.13);
+  }
+  .m-head .role{font-size:19px;font-weight:800;letter-spacing:.6px;}
+  .m-head .client{color:var(--accent);font-size:13px;letter-spacing:2.5px;text-transform:uppercase;margin-top:5px;font-weight:600;}
+  .dur{
+    position:relative;z-index:1;text-align:center;background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:10px 18px;min-width:110px;
+  }
+  .dur .n{font-size:22px;font-weight:800;color:var(--accent);line-height:1;}
+  .dur .u{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#cfdce6;margin-top:3px;}
+  .dur .dates{font-size:9.5px;color:#9fb4c4;margin-top:5px;letter-spacing:.5px;}
+  .m-body{display:flex;flex:1;}
+  .m-side{width:31%;background:var(--navy);color:#e8eef4;padding:24px 22px 24px 46px;}
+  .m-side h4{
+    font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;color:var(--accent);
+    font-weight:700;margin:18px 0 9px;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:6px;
+  }
+  .m-side h4:first-child{margin-top:0;}
+  .m-main{flex:1;padding:24px 46px 24px 28px;}
+  .bg-card{
+    background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:8px;
+    padding:14px 16px;font-size:11.5px;line-height:1.6;margin-bottom:20px;
+  }
+  .ach-group{margin-bottom:16px;}
+  .ach-group h5{
+    font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--teal);
+    font-weight:700;margin-bottom:8px;
+  }
+
+  /* ============ PRINT ============ */
+  @page{size:A4;margin:0;}
+  @media print{
+    body{background:#fff;}
+    .form-panel,.preview-note,.toolbar{display:none !important;}
+    .app{display:block;height:auto;overflow:visible;}
+    .preview-wrap{overflow:visible;padding:0;}
+    .page{margin:0;box-shadow:none;page-break-after:always;}
+    .page:last-child{page-break-after:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ==================== FORM ==================== -->
+  <div class="form-panel">
+    <div class="form-head">
+      <div class="mark">S</div>
+      <div>
+        <h1>SONADIVE <small>Automatic CV Generator — fill the form, the CV updates live</small></h1>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <fieldset>
+        <legend>Identity &amp; Contact</legend>
+        <label>Full name (optional — shown on page 1)</label>
+        <input type="text" id="f_name" placeholder="e.g. Champion Ngabo">
+        <div class="row2">
+          <div>
+            <label>Job title — part 1 (white)</label>
+            <input type="text" id="f_role1" placeholder="ANAPLAN">
+          </div>
+          <div>
+            <label>Part 2 (gold)</label>
+            <input type="text" id="f_role2" placeholder="SOLUTION ARCHITECT">
+          </div>
+        </div>
+        <label>Subtitle (specialties line)</label>
+        <input type="text" id="f_sub" placeholder="Enterprise Performance Management · FP&A · Supply Chain">
+        <label>Experience badge</label>
+        <input type="text" id="f_badge" placeholder="6 Years of Experience">
+        <div class="row2">
+          <div>
+            <label>Email</label>
+            <input type="text" id="f_email" placeholder="name@mail.com">
+          </div>
+          <div>
+            <label>Phone</label>
+            <input type="text" id="f_phone" placeholder="+33 ...">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Skills (page 1 left column)</legend>
+        <label>Tools / Applications <span style="font-weight:400">(comma separated)</span></label>
+        <textarea id="f_tools" placeholder="Anaplan · Solution Architect, Power BI, AWS"></textarea>
+        <label>Languages &amp; Frameworks</label>
+        <input type="text" id="f_frameworks" placeholder="Python, SQL, JavaScript">
+        <label>Methodologies</label>
+        <input type="text" id="f_methods" placeholder="Agile (SCRUM, XP, Kanban…)">
+        <label>Sectors</label>
+        <input type="text" id="f_sectors" placeholder="Retail · Telecom · Insurance">
+        <label>Spoken languages — one per line: <b>Name : level%</b></label>
+        <textarea id="f_langs" placeholder="English : 95&#10;French : 95"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Experiences &amp; Diplomas (page 1 right)</legend>
+        <label>Employers — one per line: <b>Title | dates line</b></label>
+        <textarea id="f_jobs" placeholder="Fadmoor — Anaplan Solution Architect | 5 years · Oct 2020 – Jan 2026"></textarea>
+        <label>Diplomas &amp; training — one per line</label>
+        <textarea id="f_diplomas" placeholder="Certification — Anaplan Solution Architect&#10;Computer Engineering Degree — 2019"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Projects / Missions</legend>
+        <div class="hint" style="margin-bottom:8px;">
+          Each project becomes one full CV page (like Siemens, 8x8… in the model).
+          The "Main missions" list on page 1 is generated automatically from these projects.
+          Prefix a sidebar item with <b>*</b> to highlight it in gold.
+        </div>
+        <div id="projects"></div>
+        <button class="btn btn-gold" onclick="addProject()">＋ Add a project</button>
+      </fieldset>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn btn-navy" onclick="window.print()">⬇ Download PDF</button>
+      <button class="btn btn-ghost" onclick="loadExample()">Load example</button>
+      <button class="btn btn-danger" onclick="clearAll()">Clear all</button>
+    </div>
+  </div>
+
+  <!-- ==================== PREVIEW ==================== -->
+  <div class="preview-wrap">
+    <div class="preview-note">Live preview — click « Download PDF » then choose “Save as PDF” (margins: none).</div>
+    <div id="preview"></div>
+  </div>
+</div>
+
+<script>
+/* ================= STATE ================= */
+const BRAND = "SONADIVE";
+let state = null;
+
+function blankProject(){
+  return {
+    role:"", client:"", durN:"", durU:"Months", dates:"",
+    sideGroups:[{title:"Tools / Applications", items:""}],
+    background:"",
+    achGroups:[{title:"", bullets:""}]
+  };
+}
+function blankState(){
+  return {
+    name:"", role1:"", role2:"", sub:"", badge:"",
+    email:"", phone:"",
+    tools:"", frameworks:"", methods:"", sectors:"", langs:"",
+    jobs:"", diplomas:"",
+    projects:[blankProject()]
+  };
+}
+
+/* ================= EXAMPLE DATA ================= */
+function exampleState(){
+  return {
+    name:"Champion Ngabo", role1:"ANAPLAN", role2:"SOLUTION ARCHITECT",
+    sub:"Enterprise Performance Management · FP&A · Supply Chain · ICM",
+    badge:"6 Years of Experience",
+    email:"champ.ngabo@outlook.com", phone:"+33 7 58 58 56 24",
+    tools:"Anaplan · Solution Architect, Anaplan · Certified Model Builder, Pigment · Certified, Power BI, AWS, Microsoft Azure",
+    frameworks:"Python, SQL, JavaScript, Spark",
+    methods:"Agile (SCRUM, XP, Kanban…)",
+    sectors:"Retail & E-Commerce · Distribution · Telecom · Mutual & Provident Insurance",
+    langs:"English : 95\nFrench : 95",
+    jobs:"Fadmoor — Anaplan Solution Architect | 5 years & 7 months · Oct 2020 – Jan 2026\nWyzeo — Anaplan Solution Architect | 4 months · Feb 2026 – May 2026",
+    diplomas:"Certification — Anaplan Solution Architect\nCertification — Anaplan Model Builder\nCertification — Pigment Model Builder\nGoogle IT Support Specialist\nComputer Engineering Degree — 2019",
+    projects:[
+      {
+        role:"SENIOR ANAPLAN MODEL BUILDER", client:"Siemens",
+        durN:"10", durU:"Months", dates:"Mar 2025 – Dec 2025",
+        sideGroups:[
+          {title:"Tools / Applications", items:"*Anaplan, *Polaris, EAConnect, Jira, NetSuite, Timeneye"},
+          {title:"Scope", items:"CapEx Planning, OpEx Planning, Workforce Planning, 27 Countries"}
+        ],
+        background:"As the Senior Anaplan Model Builder for Siemens' Connected Planning transformation, I designed and delivered an integrated Finance Planning solution supporting CapEx, OpEx and Workforce Planning across 27 countries.",
+        achGroups:[
+          {title:"", bullets:"Designed and implemented a Connected Planning architecture for Finance across 27 countries.\nDeveloped the CapEx Planning model, including investment planning and projected depreciation calculations.\nDelivered a comprehensive Workforce Planning solution covering FTE planning, HR payroll integration, and daily rate (TJM) valuation."}
+        ]
+      },
+      {
+        role:"SENIOR ANAPLAN MODEL BUILDER", client:"8x8",
+        durN:"2", durU:"Years", dates:"Mar 2023 – Mar 2025",
+        sideGroups:[
+          {title:"Tools / Applications", items:"*Anaplan, EaConnect, Docusign, AWS, Paycom, Timeneye"},
+          {title:"Other", items:"Incentive Compensation, Data Integration, User Training"}
+        ],
+        background:"Within 8x8, I worked on the complex issue of variable remuneration (ICM), transforming complex commission policies into an automated Anaplan model that guarantees the accuracy of sales-force compensation calculations.",
+        achGroups:[
+          {title:"Variable Compensation Management (ICM)", bullets:"Configured the incentive compensation structure in Anaplan to reflect commission plans.\nAutomated integration of employee performance data from cloud sources.\nDeveloped management dashboards for employees to monitor their objectives."},
+          {title:"Maintenance & Training", bullets:"Validation and non-regression testing on complex computational models.\nTraining of HR and sales teams in the daily use of the solution."}
+        ]
+      }
+    ]
+  };
+}
+
+/* ================= HELPERS ================= */
+const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const lines = s => (s||"").split("\n").map(x=>x.trim()).filter(Boolean);
+const csv = s => (s||"").split(",").map(x=>x.trim()).filter(Boolean);
+
+/* ================= FORM (static fields) ================= */
+const FIELDS = ["name","role1","role2","sub","badge","email","phone","tools","frameworks","methods","sectors","langs","jobs","diplomas"];
+function bindStaticFields(){
+  FIELDS.forEach(k=>{
+    const el = document.getElementById("f_"+k);
+    el.addEventListener("input", ()=>{ state[k]=el.value; save(); renderPreview(); });
+  });
+}
+function fillStaticFields(){
+  FIELDS.forEach(k=>{ document.getElementById("f_"+k).value = state[k]||""; });
+}
+
+/* ================= FORM (projects, dynamic) ================= */
+function renderProjectsForm(){
+  const box = document.getElementById("projects");
+  box.innerHTML = state.projects.map((p,i)=>`
+    <div class="proj-card">
+      <div class="proj-top">
+        <div class="pt">Project ${i+1}${p.client? " — "+esc(p.client):""}</div>
+        <button class="btn btn-danger btn-sm" onclick="delProject(${i})">✕ Remove</button>
+      </div>
+      <div class="row2">
+        <div><label>Role title</label>
+          <input type="text" value="${esc(p.role)}" oninput="upP(${i},'role',this.value)" placeholder="SENIOR ANAPLAN MODEL BUILDER"></div>
+        <div><label>Client</label>
+          <input type="text" value="${esc(p.client)}" oninput="upP(${i},'client',this.value)" placeholder="Siemens"></div>
+      </div>
+      <div class="row2">
+        <div><label>Duration (number)</label>
+          <input type="text" value="${esc(p.durN)}" oninput="upP(${i},'durN',this.value)" placeholder="10"></div>
+        <div><label>Unit</label>
+          <input type="text" value="${esc(p.durU)}" oninput="upP(${i},'durU',this.value)" placeholder="Months"></div>
+      </div>
+      <label>Dates</label>
+      <input type="text" value="${esc(p.dates)}" oninput="upP(${i},'dates',this.value)" placeholder="Mar 2025 – Dec 2025">
+
+      ${p.sideGroups.map((g,gi)=>`
+        <div class="subcard">
+          <div class="sc-top"><span>Sidebar group ${gi+1}</span>
+            <button class="btn btn-danger btn-sm" onclick="delSide(${i},${gi})">✕</button></div>
+          <label>Group title</label>
+          <input type="text" value="${esc(g.title)}" oninput="upSide(${i},${gi},'title',this.value)" placeholder="Tools / Applications">
+          <label>Items (comma separated — prefix * for gold)</label>
+          <textarea oninput="upSide(${i},${gi},'items',this.value)" placeholder="*Anaplan, Jira, NetSuite">${esc(g.items)}</textarea>
+        </div>`).join("")}
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addSide(${i})">＋ Sidebar group</button>
+
+      <label style="margin-top:12px;">Background (context paragraph)</label>
+      <textarea oninput="upP(${i},'background',this.value)" placeholder="Describe the mission context…">${esc(p.background)}</textarea>
+
+      ${p.achGroups.map((g,gi)=>`
+        <div class="subcard">
+          <div class="sc-top"><span>Achievements ${gi+1}</span>
+            <button class="btn btn-danger btn-sm" onclick="delAch(${i},${gi})">✕</button></div>
+          <label>Section title (optional)</label>
+          <input type="text" value="${esc(g.title)}" oninput="upAch(${i},${gi},'title',this.value)" placeholder="Cash Flow Planning">
+          <label>Bullets — one per line</label>
+          <textarea oninput="upAch(${i},${gi},'bullets',this.value)" placeholder="Designed forecasting models…&#10;Configured complex calculations…">${esc(g.bullets)}</textarea>
+        </div>`).join("")}
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addAch(${i})">＋ Achievements section</button>
+    </div>`).join("");
+}
+function upP(i,k,v){ state.projects[i][k]=v; save(); renderPreview(); if(k==="client") refreshTitleOnly(i); }
+function refreshTitleOnly(i){
+  const card = document.querySelectorAll(".proj-card")[i];
+  if(card) card.querySelector(".pt").textContent = "Project "+(i+1)+(state.projects[i].client? " — "+state.projects[i].client:"");
+}
+function upSide(i,gi,k,v){ state.projects[i].sideGroups[gi][k]=v; save(); renderPreview(); }
+function upAch(i,gi,k,v){ state.projects[i].achGroups[gi][k]=v; save(); renderPreview(); }
+function addProject(){ state.projects.push(blankProject()); save(); renderProjectsForm(); renderPreview(); }
+function delProject(i){ state.projects.splice(i,1); save(); renderProjectsForm(); renderPreview(); }
+function addSide(i){ state.projects[i].sideGroups.push({title:"",items:""}); save(); renderProjectsForm(); renderPreview(); }
+function delSide(i,gi){ state.projects[i].sideGroups.splice(gi,1); save(); renderProjectsForm(); renderPreview(); }
+function addAch(i){ state.projects[i].achGroups.push({title:"",bullets:""}); save(); renderProjectsForm(); renderPreview(); }
+function delAch(i,gi){ state.projects[i].achGroups.splice(gi,1); save(); renderProjectsForm(); renderPreview(); }
+
+/* ================= CV RENDERING ================= */
+function chipHtml(item){
+  const gold = item.startsWith("*");
+  const txt = gold ? item.slice(1).trim() : item;
+  return `<span class="chip${gold?" gold":""}">${esc(txt)}</span>`;
+}
+function footerHtml(){
+  const who = state.name || BRAND;
+  const centre = who + (state.role1||state.role2 ? " · " + [state.role1,state.role2].filter(Boolean).join(" ") : "");
+  return `<div class="footer">
+    <span><b>✉</b> ${esc(state.email)||"—"}</span>
+    <span>${esc(centre)}</span>
+    <span><b>✆</b> ${esc(state.phone)||"—"}</span>
+  </div>`;
+}
+function logoHtml(){ return `<div class="brand"><div class="logo">${BRAND}</div></div>`; }
+
+function profilePage(){
+  const langBars = lines(state.langs).map(l=>{
+    const [n,lv] = l.split(":").map(x=>x.trim());
+    const pct = Math.max(0,Math.min(100,parseInt(lv)||90));
+    return `<div class="lang-bar"><span class="lname">${esc(n)}</span>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  }).join("");
+  const jobCards = lines(state.jobs).map(l=>{
+    const [t,d] = l.split("|").map(x=>x.trim());
+    return `<div class="xp-card"><div class="t">${esc(t)}</div><div class="d">${esc(d||"")}</div></div>`;
+  }).join("");
+  const diplomaLis = lines(state.diplomas).map(l=>`<li>${esc(l)}</li>`).join("");
+  const missionLis = state.projects.filter(p=>p.client).map(p=>{
+    const scope = (p.achGroups[0] && p.achGroups[0].title) ? " — "+p.achGroups[0].title : (p.role? " — "+p.role : "");
+    return `<li>${esc(p.client)}${esc(scope)}</li>`;
+  }).join("");
+  return `<div class="page">
+    <div class="hero">
+      ${logoHtml()}
+      ${state.name? `<div class="name">${esc(state.name)}</div>`:""}
+      <div class="role" ${state.name?'style="margin-top:6px;"':''}>${esc(state.role1)} <span>${esc(state.role2)}</span></div>
+      ${state.sub? `<div class="sub">${esc(state.sub)}</div>`:""}
+      ${state.badge? `<div class="exp-badge">✦ ${esc(state.badge)}</div>`:""}
+    </div>
+    <div class="p1-body">
+      <div class="p1-left">
+        <div class="block">
+          <h3 class="section">Skills</h3>
+          ${state.tools? `<div class="kv"><div class="k">Tools / Applications</div>
+            <div class="tagrow">${csv(state.tools).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div>`:""}
+          ${state.frameworks? `<div class="kv"><div class="k">Languages &amp; Frameworks</div>
+            <div class="tagrow">${csv(state.frameworks).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div>`:""}
+          ${state.methods? `<div class="kv"><div class="k">Methodologies</div><div class="v">${esc(state.methods)}</div></div>`:""}
+          ${state.sectors? `<div class="kv"><div class="k">Sectors</div><div class="v">${esc(state.sectors)}</div></div>`:""}
+        </div>
+        ${langBars? `<div class="block"><h3 class="section">Languages</h3>${langBars}</div>`:""}
+      </div>
+      <div class="p1-right">
+        ${jobCards? `<div class="block"><h3 class="section">Experiences</h3>${jobCards}</div>`:""}
+        ${diplomaLis? `<div class="block"><h3 class="section">Diplomas &amp; Training</h3><ul class="dots">${diplomaLis}</ul></div>`:""}
+        ${missionLis? `<div class="block"><h3 class="section">Main Missions</h3><ul class="dots">${missionLis}</ul></div>`:""}
+      </div>
+    </div>
+    ${footerHtml()}
+  </div>`;
+}
+
+function projectPage(p){
+  const side = p.sideGroups.filter(g=>g.title||g.items).map(g=>`
+    <h4>${esc(g.title)}</h4>${csv(g.items).map(chipHtml).join("")}`).join("");
+  const ach = p.achGroups.filter(g=>g.title||g.bullets).map(g=>`
+    <div class="ach-group">
+      ${g.title? `<h5>${esc(g.title)}</h5>`:""}
+      <ul class="dots">${lines(g.bullets).map(b=>`<li>${esc(b)}</li>`).join("")}</ul>
+    </div>`).join("");
+  return `<div class="page">
+    <div class="m-head">
+      <div>
+        ${logoHtml()}
+        <div class="role" style="margin-top:10px;">${esc(p.role)}</div>
+        <div class="client">${esc(p.client)}</div>
+      </div>
+      <div class="dur">
+        <div class="n">${esc(p.durN)}</div>
+        <div class="u">${esc(p.durU)}</div>
+        ${p.dates? `<div class="dates">${esc(p.dates)}</div>`:""}
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="m-side">${side}</div>
+      <div class="m-main">
+        ${p.background? `<h3 class="section">Background</h3><div class="bg-card">${esc(p.background)}</div>`:""}
+        ${ach? `<h3 class="section">Achievements</h3>${ach}`:""}
+      </div>
+    </div>
+    ${footerHtml()}
+  </div>`;
+}
+
+function renderPreview(){
+  const pages = [profilePage(), ...state.projects.filter(p=>p.client||p.role||p.background).map(projectPage)];
+  document.getElementById("preview").innerHTML = pages.join("");
+}
+
+/* ================= PERSISTENCE ================= */
+function save(){ try{ localStorage.setItem("sonadive_cv", JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem("sonadive_cv");
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return null;
+}
+function loadExample(){
+  state = exampleState();
+  save(); fillStaticFields(); renderProjectsForm(); renderPreview();
+}
+function clearAll(){
+  if(!confirm("Clear the whole form?")) return;
+  state = blankState();
+  save(); fillStaticFields(); renderProjectsForm(); renderPreview();
+}
+
+/* ================= INIT ================= */
+state = load() || exampleState();
+bindStaticFields();
+fillStaticFields();
+renderProjectsForm();
+renderPreview();
+</script>
+</body>
+</html>
