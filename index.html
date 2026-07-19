@@ -33,6 +33,12 @@
     width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--navy);
     font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
   }
+  .lang-toggle{margin-left:auto;display:flex;gap:4px;}
+  .lang-toggle button{
+    border:1px solid rgba(255,255,255,.3);background:transparent;color:#cfdce6;border-radius:6px;
+    padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;
+  }
+  .lang-toggle button.active{background:var(--accent);border-color:var(--accent);color:var(--navy);}
   .form-head h1{font-size:16px;letter-spacing:1px;}
   .form-head small{display:block;font-weight:400;color:#9fb4c4;font-size:11px;letter-spacing:.5px;}
   .form-body{padding:16px 20px;}
@@ -215,85 +221,89 @@
     <div class="form-head">
       <div class="mark">S</div>
       <div>
-        <h1>SONADIVE <small>Automatic CV Generator — fill the form, the CV updates live</small></h1>
+        <h1>SONADIVE <small data-i18n="head_sub">Automatic CV Generator — fill the form, the CV updates live</small></h1>
+      </div>
+      <div class="lang-toggle">
+        <button id="lang_en" onclick="setLang('en')">EN</button>
+        <button id="lang_fr" onclick="setLang('fr')">FR</button>
       </div>
     </div>
 
     <div class="form-body">
       <fieldset>
-        <legend>Identity &amp; Contact</legend>
-        <label>Full name (optional — shown on page 1)</label>
+        <legend data-i18n="leg_identity">Identity &amp; Contact</legend>
+        <label data-i18n="l_name">Full name (optional — shown on page 1)</label>
         <input type="text" id="f_name" placeholder="e.g. Champion Ngabo">
         <div class="row2">
           <div>
-            <label>Job title — part 1 (white)</label>
+            <label data-i18n="l_role1">Job title — part 1 (white)</label>
             <input type="text" id="f_role1" placeholder="ANAPLAN">
           </div>
           <div>
-            <label>Part 2 (gold)</label>
+            <label data-i18n="l_role2">Part 2 (gold)</label>
             <input type="text" id="f_role2" placeholder="SOLUTION ARCHITECT">
           </div>
         </div>
-        <label>Subtitle (specialties line)</label>
+        <label data-i18n="l_sub">Subtitle (specialties line)</label>
         <input type="text" id="f_sub" placeholder="Enterprise Performance Management · FP&A · Supply Chain">
-        <label>Experience badge</label>
+        <label data-i18n="l_badge">Experience badge</label>
         <input type="text" id="f_badge" placeholder="6 Years of Experience">
         <div class="row2">
           <div>
-            <label>Email</label>
+            <label data-i18n="l_email">Email</label>
             <input type="text" id="f_email" placeholder="name@mail.com">
           </div>
           <div>
-            <label>Phone</label>
+            <label data-i18n="l_phone">Phone</label>
             <input type="text" id="f_phone" placeholder="+33 ...">
           </div>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>Skills (page 1 left column)</legend>
-        <label>Tools / Applications <span style="font-weight:400">(comma separated)</span></label>
+        <legend data-i18n="leg_skills">Skills (page 1 left column)</legend>
+        <label data-i18n="l_tools">Tools / Applications <span style="font-weight:400">(comma separated)</span></label>
         <textarea id="f_tools" placeholder="Anaplan · Solution Architect, Power BI, AWS"></textarea>
-        <label>Languages &amp; Frameworks</label>
+        <label data-i18n="l_frameworks">Languages &amp; Frameworks</label>
         <input type="text" id="f_frameworks" placeholder="Python, SQL, JavaScript">
-        <label>Methodologies</label>
+        <label data-i18n="l_methods">Methodologies</label>
         <input type="text" id="f_methods" placeholder="Agile (SCRUM, XP, Kanban…)">
-        <label>Sectors</label>
+        <label data-i18n="l_sectors">Sectors</label>
         <input type="text" id="f_sectors" placeholder="Retail · Telecom · Insurance">
-        <label>Spoken languages — one per line: <b>Name : level%</b></label>
+        <label data-i18n="l_langs">Spoken languages — one per line: <b>Name : level%</b></label>
         <textarea id="f_langs" placeholder="English : 95&#10;French : 95"></textarea>
       </fieldset>
 
       <fieldset>
-        <legend>Experiences &amp; Diplomas (page 1 right)</legend>
-        <label>Employers — one per line: <b>Title | dates line</b></label>
+        <legend data-i18n="leg_expdip">Experiences &amp; Diplomas (page 1 right)</legend>
+        <label data-i18n="l_jobs">Employers — one per line: <b>Title | dates line</b></label>
         <textarea id="f_jobs" placeholder="Fadmoor — Anaplan Solution Architect | 5 years · Oct 2020 – Jan 2026"></textarea>
-        <label>Diplomas &amp; training — one per line</label>
+        <label data-i18n="l_diplomas">Diplomas &amp; training — one per line</label>
         <textarea id="f_diplomas" placeholder="Certification — Anaplan Solution Architect&#10;Computer Engineering Degree — 2019"></textarea>
       </fieldset>
 
       <fieldset>
-        <legend>Projects / Missions</legend>
-        <div class="hint" style="margin-bottom:8px;">
+        <legend data-i18n="leg_projects">Projects / Missions</legend>
+        <div class="hint" style="margin-bottom:8px;" data-i18n="hint_projects">
           Each project becomes one full CV page (like Siemens, 8x8… in the model).
           The "Main missions" list on page 1 is generated automatically from these projects.
           Prefix a sidebar item with <b>*</b> to highlight it in gold.
         </div>
         <div id="projects"></div>
-        <button class="btn btn-gold" onclick="addProject()">＋ Add a project</button>
+        <button class="btn btn-gold" onclick="addProject()" data-i18n="btn_addproj">＋ Add a project</button>
       </fieldset>
     </div>
 
     <div class="toolbar">
-      <button class="btn btn-navy" onclick="window.print()">⬇ Download PDF</button>
-      <button class="btn btn-ghost" onclick="loadExample()">Load example</button>
-      <button class="btn btn-danger" onclick="clearAll()">Clear all</button>
+      <button class="btn btn-navy" onclick="window.print()" data-i18n="btn_pdf">⬇ Download PDF</button>
+      <button class="btn btn-ghost" onclick="loadExample()" data-i18n="btn_example">Load example</button>
+      <button class="btn btn-danger" onclick="clearAll()" data-i18n="btn_clear">Clear all</button>
     </div>
   </div>
 
   <!-- ==================== PREVIEW ==================== -->
   <div class="preview-wrap">
-    <div class="preview-note">Live preview — click « Download PDF » then choose “Save as PDF” (margins: none).</div>
+    <div class="preview-note" data-i18n="note_preview">Live preview — click « Download PDF » then choose “Save as PDF” (margins: none).</div>
     <div id="preview"></div>
   </div>
 </div>
@@ -303,10 +313,94 @@
 const BRAND = "SONADIVE";
 let state = null;
 
+/* ================= I18N ================= */
+const I18N = {
+  en: {
+    head_sub:"Automatic CV Generator — fill the form, the CV updates live",
+    leg_identity:"Identity &amp; Contact",
+    l_name:"Full name (optional — shown on page 1)",
+    l_role1:"Job title — part 1 (white)", l_role2:"Part 2 (gold)",
+    l_sub:"Subtitle (specialties line)", l_badge:"Experience badge",
+    l_email:"Email", l_phone:"Phone",
+    leg_skills:"Skills (page 1 left column)",
+    l_tools:'Tools / Applications <span style="font-weight:400">(comma separated)</span>',
+    l_frameworks:"Languages &amp; Frameworks", l_methods:"Methodologies", l_sectors:"Sectors",
+    l_langs:"Spoken languages — one per line: <b>Name : level%</b>",
+    leg_expdip:"Experiences &amp; Diplomas (page 1 right)",
+    l_jobs:"Employers — one per line: <b>Title | dates line</b>",
+    l_diplomas:"Diplomas &amp; training — one per line",
+    leg_projects:"Projects / Missions",
+    hint_projects:'Each project becomes one full CV page (like Siemens, 8x8… in the model). The "Main missions" list on page 1 is generated automatically from these projects. Prefix a sidebar item with <b>*</b> to highlight it in gold.',
+    btn_addproj:"＋ Add a project", btn_pdf:"⬇ Download PDF",
+    btn_example:"Load example", btn_clear:"Clear all",
+    note_preview:"Live preview — click « Download PDF » then choose “Save as PDF” (margins: none).",
+    p_project:"Project", p_remove:"✕ Remove", p_role:"Role title", p_client:"Client",
+    p_durn:"Duration (number)", p_duru:"Unit", p_dates:"Dates",
+    p_sidegroup:"Sidebar group", p_gtitle:"Group title",
+    p_items:"Items (comma separated — prefix * for gold)",
+    p_background:"Background (context paragraph)", p_ach:"Achievements",
+    p_sectitle:"Section title (optional)", p_bullets:"Bullets — one per line",
+    p_addside:"＋ Sidebar group", p_addach:"＋ Achievements section",
+    confirm_clear:"Clear the whole form?",
+    cv_skills:"Skills", cv_tools:"Tools / Applications", cv_langfw:"Languages &amp; Frameworks",
+    cv_methods:"Methodologies", cv_sectors:"Sectors", cv_languages:"Languages",
+    cv_experiences:"Experiences", cv_diplomas:"Diplomas &amp; Training", cv_missions:"Main Missions",
+    cv_background:"Background", cv_achievements:"Achievements"
+  },
+  fr: {
+    head_sub:"Générateur de CV automatique — remplissez le formulaire, le CV se met à jour en direct",
+    leg_identity:"Identité &amp; Contact",
+    l_name:"Nom complet (optionnel — affiché en page 1)",
+    l_role1:"Titre du poste — partie 1 (blanc)", l_role2:"Partie 2 (doré)",
+    l_sub:"Sous-titre (ligne de spécialités)", l_badge:"Badge d'expérience",
+    l_email:"Email", l_phone:"Téléphone",
+    leg_skills:"Compétences (page 1, colonne gauche)",
+    l_tools:'Outils / Applications <span style="font-weight:400">(séparés par des virgules)</span>',
+    l_frameworks:"Langages &amp; Frameworks", l_methods:"Méthodologies", l_sectors:"Secteurs",
+    l_langs:"Langues parlées — une par ligne : <b>Nom : niveau%</b>",
+    leg_expdip:"Expériences &amp; Diplômes (page 1, droite)",
+    l_jobs:"Employeurs — un par ligne : <b>Titre | ligne de dates</b>",
+    l_diplomas:"Diplômes &amp; formations — un par ligne",
+    leg_projects:"Projets / Missions",
+    hint_projects:'Chaque projet devient une page complète du CV (comme Siemens, 8x8… dans le modèle). La liste « Missions principales » de la page 1 est générée automatiquement à partir de ces projets. Préfixez un élément par <b>*</b> pour le surligner en doré.',
+    btn_addproj:"＋ Ajouter un projet", btn_pdf:"⬇ Télécharger le PDF",
+    btn_example:"Charger l'exemple", btn_clear:"Tout effacer",
+    note_preview:"Aperçu en direct — cliquez sur « Télécharger le PDF » puis choisissez « Enregistrer au format PDF » (marges : aucune).",
+    p_project:"Projet", p_remove:"✕ Supprimer", p_role:"Titre du rôle", p_client:"Client",
+    p_durn:"Durée (nombre)", p_duru:"Unité", p_dates:"Dates",
+    p_sidegroup:"Groupe latéral", p_gtitle:"Titre du groupe",
+    p_items:"Éléments (séparés par des virgules — préfixe * pour doré)",
+    p_background:"Contexte (paragraphe)", p_ach:"Réalisations",
+    p_sectitle:"Titre de section (optionnel)", p_bullets:"Puces — une par ligne",
+    p_addside:"＋ Groupe latéral", p_addach:"＋ Section réalisations",
+    confirm_clear:"Effacer tout le formulaire ?",
+    cv_skills:"Compétences", cv_tools:"Outils / Applications", cv_langfw:"Langages &amp; Frameworks",
+    cv_methods:"Méthodologies", cv_sectors:"Secteurs", cv_languages:"Langues",
+    cv_experiences:"Expériences", cv_diplomas:"Diplômes &amp; Formations", cv_missions:"Missions principales",
+    cv_background:"Contexte", cv_achievements:"Réalisations"
+  }
+};
+function curLang(){ return (state && state.lang) === "fr" ? "fr" : "en"; }
+function t(k){ return I18N[curLang()][k] !== undefined ? I18N[curLang()][k] : I18N.en[k]; }
+function setLang(l){
+  state.lang = l; save();
+  applyLang(); renderProjectsForm(); renderPreview();
+}
+function applyLang(){
+  const lang = curLang();
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k = el.getAttribute("data-i18n");
+    if(I18N[lang][k] !== undefined) el.innerHTML = I18N[lang][k];
+  });
+  document.getElementById("lang_en").classList.toggle("active", lang==="en");
+  document.getElementById("lang_fr").classList.toggle("active", lang==="fr");
+  document.documentElement.lang = lang;
+}
+
 function blankProject(){
   return {
     role:"", client:"", durN:"", durU:"Months", dates:"",
-    sideGroups:[{title:"Tools / Applications", items:""}],
+    sideGroups:[{title: (typeof state==="object" && state) ? t("cv_tools").replace(/&amp;/g,"&") : "Tools / Applications", items:""}],
     background:"",
     achGroups:[{title:"", bullets:""}]
   };
@@ -388,54 +482,54 @@ function renderProjectsForm(){
   box.innerHTML = state.projects.map((p,i)=>`
     <div class="proj-card">
       <div class="proj-top">
-        <div class="pt">Project ${i+1}${p.client? " — "+esc(p.client):""}</div>
-        <button class="btn btn-danger btn-sm" onclick="delProject(${i})">✕ Remove</button>
+        <div class="pt">${t("p_project")} ${i+1}${p.client? " — "+esc(p.client):""}</div>
+        <button class="btn btn-danger btn-sm" onclick="delProject(${i})">${t("p_remove")}</button>
       </div>
       <div class="row2">
-        <div><label>Role title</label>
+        <div><label>${t("p_role")}</label>
           <input type="text" value="${esc(p.role)}" oninput="upP(${i},'role',this.value)" placeholder="SENIOR ANAPLAN MODEL BUILDER"></div>
-        <div><label>Client</label>
+        <div><label>${t("p_client")}</label>
           <input type="text" value="${esc(p.client)}" oninput="upP(${i},'client',this.value)" placeholder="Siemens"></div>
       </div>
       <div class="row2">
-        <div><label>Duration (number)</label>
+        <div><label>${t("p_durn")}</label>
           <input type="text" value="${esc(p.durN)}" oninput="upP(${i},'durN',this.value)" placeholder="10"></div>
-        <div><label>Unit</label>
+        <div><label>${t("p_duru")}</label>
           <input type="text" value="${esc(p.durU)}" oninput="upP(${i},'durU',this.value)" placeholder="Months"></div>
       </div>
-      <label>Dates</label>
+      <label>${t("p_dates")}</label>
       <input type="text" value="${esc(p.dates)}" oninput="upP(${i},'dates',this.value)" placeholder="Mar 2025 – Dec 2025">
 
       ${p.sideGroups.map((g,gi)=>`
         <div class="subcard">
-          <div class="sc-top"><span>Sidebar group ${gi+1}</span>
+          <div class="sc-top"><span>${t("p_sidegroup")} ${gi+1}</span>
             <button class="btn btn-danger btn-sm" onclick="delSide(${i},${gi})">✕</button></div>
-          <label>Group title</label>
+          <label>${t("p_gtitle")}</label>
           <input type="text" value="${esc(g.title)}" oninput="upSide(${i},${gi},'title',this.value)" placeholder="Tools / Applications">
-          <label>Items (comma separated — prefix * for gold)</label>
+          <label>${t("p_items")}</label>
           <textarea oninput="upSide(${i},${gi},'items',this.value)" placeholder="*Anaplan, Jira, NetSuite">${esc(g.items)}</textarea>
         </div>`).join("")}
-      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addSide(${i})">＋ Sidebar group</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addSide(${i})">${t("p_addside")}</button>
 
-      <label style="margin-top:12px;">Background (context paragraph)</label>
+      <label style="margin-top:12px;">${t("p_background")}</label>
       <textarea oninput="upP(${i},'background',this.value)" placeholder="Describe the mission context…">${esc(p.background)}</textarea>
 
       ${p.achGroups.map((g,gi)=>`
         <div class="subcard">
-          <div class="sc-top"><span>Achievements ${gi+1}</span>
+          <div class="sc-top"><span>${t("p_ach")} ${gi+1}</span>
             <button class="btn btn-danger btn-sm" onclick="delAch(${i},${gi})">✕</button></div>
-          <label>Section title (optional)</label>
+          <label>${t("p_sectitle")}</label>
           <input type="text" value="${esc(g.title)}" oninput="upAch(${i},${gi},'title',this.value)" placeholder="Cash Flow Planning">
-          <label>Bullets — one per line</label>
+          <label>${t("p_bullets")}</label>
           <textarea oninput="upAch(${i},${gi},'bullets',this.value)" placeholder="Designed forecasting models…&#10;Configured complex calculations…">${esc(g.bullets)}</textarea>
         </div>`).join("")}
-      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addAch(${i})">＋ Achievements section</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addAch(${i})">${t("p_addach")}</button>
     </div>`).join("");
 }
 function upP(i,k,v){ state.projects[i][k]=v; save(); renderPreview(); if(k==="client") refreshTitleOnly(i); }
 function refreshTitleOnly(i){
   const card = document.querySelectorAll(".proj-card")[i];
-  if(card) card.querySelector(".pt").textContent = "Project "+(i+1)+(state.projects[i].client? " — "+state.projects[i].client:"");
+  if(card) card.querySelector(".pt").textContent = t("p_project")+" "+(i+1)+(state.projects[i].client? " — "+state.projects[i].client:"");
 }
 function upSide(i,gi,k,v){ state.projects[i].sideGroups[gi][k]=v; save(); renderPreview(); }
 function upAch(i,gi,k,v){ state.projects[i].achGroups[gi][k]=v; save(); renderPreview(); }
@@ -490,20 +584,20 @@ function profilePage(){
     <div class="p1-body">
       <div class="p1-left">
         <div class="block">
-          <h3 class="section">Skills</h3>
-          ${state.tools? `<div class="kv"><div class="k">Tools / Applications</div>
-            <div class="tagrow">${csv(state.tools).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div>`:""}
-          ${state.frameworks? `<div class="kv"><div class="k">Languages &amp; Frameworks</div>
-            <div class="tagrow">${csv(state.frameworks).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div>`:""}
-          ${state.methods? `<div class="kv"><div class="k">Methodologies</div><div class="v">${esc(state.methods)}</div></div>`:""}
-          ${state.sectors? `<div class="kv"><div class="k">Sectors</div><div class="v">${esc(state.sectors)}</div></div>`:""}
+          <h3 class="section">${t("cv_skills")}</h3>
+          ${state.tools? `<div class="kv"><div class="k">${t("cv_tools")}</div>
+            <div class="tagrow">${csv(state.tools).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div></div>`:""}
+          ${state.frameworks? `<div class="kv"><div class="k">${t("cv_langfw")}</div>
+            <div class="tagrow">${csv(state.frameworks).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div></div>`:""}
+          ${state.methods? `<div class="kv"><div class="k">${t("cv_methods")}</div><div class="v">${esc(state.methods)}</div></div>`:""}
+          ${state.sectors? `<div class="kv"><div class="k">${t("cv_sectors")}</div><div class="v">${esc(state.sectors)}</div></div>`:""}
         </div>
-        ${langBars? `<div class="block"><h3 class="section">Languages</h3>${langBars}</div>`:""}
+        ${langBars? `<div class="block"><h3 class="section">${t("cv_languages")}</h3>${langBars}</div>`:""}
       </div>
       <div class="p1-right">
-        ${jobCards? `<div class="block"><h3 class="section">Experiences</h3>${jobCards}</div>`:""}
-        ${diplomaLis? `<div class="block"><h3 class="section">Diplomas &amp; Training</h3><ul class="dots">${diplomaLis}</ul></div>`:""}
-        ${missionLis? `<div class="block"><h3 class="section">Main Missions</h3><ul class="dots">${missionLis}</ul></div>`:""}
+        ${jobCards? `<div class="block"><h3 class="section">${t("cv_experiences")}</h3>${jobCards}</div>`:""}
+        ${diplomaLis? `<div class="block"><h3 class="section">${t("cv_diplomas")}</h3><ul class="dots">${diplomaLis}</ul></div>`:""}
+        ${missionLis? `<div class="block"><h3 class="section">${t("cv_missions")}</h3><ul class="dots">${missionLis}</ul></div>`:""}
       </div>
     </div>
     ${footerHtml()}
@@ -534,8 +628,8 @@ function projectPage(p){
     <div class="m-body">
       <div class="m-side">${side}</div>
       <div class="m-main">
-        ${p.background? `<h3 class="section">Background</h3><div class="bg-card">${esc(p.background)}</div>`:""}
-        ${ach? `<h3 class="section">Achievements</h3>${ach}`:""}
+        ${p.background? `<h3 class="section">${t("cv_background")}</h3><div class="bg-card">${esc(p.background)}</div>`:""}
+        ${ach? `<h3 class="section">${t("cv_achievements")}</h3>${ach}`:""}
       </div>
     </div>
     ${footerHtml()}
@@ -557,12 +651,16 @@ function load(){
   return null;
 }
 function loadExample(){
+  const keepLang = state ? state.lang : undefined;
   state = exampleState();
+  state.lang = keepLang;
   save(); fillStaticFields(); renderProjectsForm(); renderPreview();
 }
 function clearAll(){
-  if(!confirm("Clear the whole form?")) return;
+  if(!confirm(t("confirm_clear"))) return;
+  const keepLang = state.lang;
   state = blankState();
+  state.lang = keepLang;
   save(); fillStaticFields(); renderProjectsForm(); renderPreview();
 }
 
@@ -570,6 +668,7 @@ function clearAll(){
 state = load() || exampleState();
 bindStaticFields();
 fillStaticFields();
+applyLang();
 renderProjectsForm();
 renderPreview();
 </script>
